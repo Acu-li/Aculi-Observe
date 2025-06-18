@@ -3,162 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <title>Acu.li Observe</title>
+    <meta http-equiv="refresh" content="60">
     <style>
         body {
-            background:#3a3a3a;
-            color:#fff;
-            font-family:Arial, sans-serif;
-            margin:0;
-            padding:0;
+            background: #3a3a3a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .wrapper {
-            width:80%;
-            margin:0 auto;
+            width: 80%;
+            margin: 0 auto;
         }
         h1 {
-            text-align:center;
-            margin:20px 0;
+            text-align: center;
+            margin: 20px 0;
         }
         .tabs {
-            display:flex;
-            margin:0;
-            padding:0 10px;
-            list-style:none;
-            overflow:hidden;
+            display: flex;
+            margin: 0;
+            padding: 0 10px;
+            list-style: none;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
         }
         .tabs li {
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            min-width:200px;
-            background:linear-gradient(#666, #444);
-            padding:10px 20px;
-            margin:0 5px;
-            border-radius:12px 12px 0 0;
-            cursor:pointer;
-            box-shadow:0 4px 6px rgba(0,0,0,0.4);
-            user-select:none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 200px;
+            background: linear-gradient(#666, #444);
+            padding: 10px 50px;
+            margin: 0 5px;
+            border-radius: 12px 12px 0 0;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+            user-select: none;
         }
         .tabs li.selected {
-            background:linear-gradient(#888, #666);
-        }
-        .tabs li span.ip {
-            font-size:0.9em;
-            color:#ddd;
-            margin-left:15px;
+            background: linear-gradient(#888, #666);
         }
         .tab-content {
-            padding:20px;
-            background:#555;
-            border-radius:12px;
-            box-shadow:0 4px 10px rgba(0,0,0,0.4);
-            width:100%;
-            margin:auto;
-            opacity:0;
-            transform:translateX(100%);
-            transition:opacity 0.5s, transform 0.5s;
-            pointer-events:none;
+            display: none;
+            width: 100%;
+            margin-top: 10px;
+            padding: 20px;
+            background: #555;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
         .tab-content.active {
-            opacity:1;
-            transform:translateX(0);
-            pointer-events:auto;
-        }
-        table {
-            width:60%;
-            font-size:1.3em;
-            border-collapse:separate;
-            border-radius:8px;
-            overflow:hidden;
-        }
-        td {
-            padding:4px 8px;
+            display: block;
         }
         .container {
-            display:flex;
-            justify-content:space-between;
-            margin:5%;
-            margin:15
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 100px;
+            gap: 40px;
         }
-        .image-section {
-            width:25%;
-            text-align:center;
+        .bubbles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex: 0 1 60ch;
+            max-width: 60ch;
         }
-        img {
-            width:100%;
-            height:150px;
-            object-fit:cover;
-            object-position:center;
-            box-shadow:0 4px 8px rgba(0,0,0,0.5);
+        .bubble {
+            background: #3a3a3a;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            font-size: 1.1em;
+            color: #fff;
+        }
+        .bubble .key {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1 1 auto;
+            gap: 20px;
+        }
+        .image-bubble {
+            /* inherits bubble style */
+            overflow: hidden;
+            max-width: 400px;
+            max-height: 300px;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-bubble img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .info-bubble {
+            /* inherits bubble style */
+            flex-direction: column;
+            text-align: center;
+        }
+        .info-bubble form,
+        .info-bubble p {
+            margin: 8px 0;
         }
         input, button {
-            background:#666;
-            border:none;
-            color:#fff;
-            padding:6px 10px;
-            border-radius:4px;
-            margin-top:5px;
+            background: #666;
+            border: none;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+        footer.footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px 0;
+        }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: #666;
+            border-radius: 24px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.75em;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+            transition: background 0.3s;
+        }
+        .github-link:hover {
+            background: #888;
         }
     </style>
 </head>
 <body>
     <div class="wrapper">
-    <h1>Acu.li Observe</h1>
-    <ul class="tabs" id="tabs">
+        <h1>Acu.li Observe</h1>
+        <ul class="tabs" id="tabs">
+            {% for name, data in devices.items() %}
+            <li onclick="showTab('{{ name }}')" data-name="{{ name }}">{{ name }}</li>
+            {% endfor %}
+        </ul>
+
         {% for name, data in devices.items() %}
-        <li onclick="showTab('{{ name }}')" data-name="{{ name }}"><span>{{ name }}</span><span class="ip">{{ data.ip }}</span></li>
-        {% endfor %}
-    </ul>
-    {% for name, data in devices.items() %}
-    <div class="tab-content" id="tab-{{ name }}">
-        <h2>{{ name }} <span class="ip">{{ data.ip }}</span></h2>
-        <div class="container">
-            <div>
-                <table>
+        <div class="tab-content" id="tab-{{ name }}">
+            <div class="container">
+                <div class="bubbles">
                     {% for key, value in data.metrics.items() %}
-                    <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+                    <div class="bubble">
+                        <span class="key">{{ key }}:</span>
+                        <span class="value">{{ value }}</span>
+                    </div>
                     {% endfor %}
-                </table>
-            </div>
-            <div class="image-section">
-                {% if data.image %}
-                <img src="{{ url_for('static', filename='uploads/' + data.image) }}"/>
-                {% endif %}
-                {% if not data.upload_disabled %}
-                <form action="/upload/{{ name }}" method="post" enctype="multipart/form-data">
-                    <input type="file" name="image" accept="image/*" required spellcheck="false">
-                    <button type="submit">Upload</button>
-                </form>
-                {% endif %}
-                <p style="text-align:center;">{{ data.info }}</p>
+                </div>
+                <div class="right-section">
+                    {% if data.image %}
+                    <div class="bubble image-bubble">
+                        <img src="{{ url_for('static', filename='uploads/' + data.image) }}" />
+                    </div>
+                    {% endif %}
+                    <div class="bubble info-bubble">
+                        {% if not data.upload_disabled %}
+                        <form action="/upload/{{ name }}" method="post" enctype="multipart/form-data">
+                            <input type="file" name="image" accept="image/*" required spellcheck="false">
+                            <button type="submit">Upload</button>
+                        </form>
+                        {% endif %}
+                        <p>{{ data.info }}</p>
+                    </div>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-    </div>
+
+    <footer class="footer">
+        <a href="https://github.com/Acu-li/Aculi-Observe" target="_blank" class="github-link">GitHub</a>
+    </footer>
+
     <script>
         const tabs = document.querySelectorAll('.tabs li');
         const contents = document.querySelectorAll('.tab-content');
         let current = 0;
-        function showTab(name){
-            contents.forEach(c=>c.classList.remove('active'));
-            tabs.forEach(t=>t.classList.remove('selected'));
-            document.getElementById('tab-'+name).classList.add('active');
-            const tab = Array.from(tabs).find(t=>t.dataset.name===name);
-            if(tab) tab.classList.add('selected');
+        function showTab(name) {
+            contents.forEach(c => c.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('selected'));
+            const content = document.getElementById('tab-' + name);
+            content.classList.add('active');
+            const tab = Array.from(tabs).find(t => t.dataset.name === name);
+            if (tab) tab.classList.add('selected');
             current = Array.from(tabs).indexOf(tab);
         }
-        function cycle(){
-            if(tabs.length===0)return;
-            current=(current+1)%tabs.length;
-            const name=tabs[current].dataset.name;
-            showTab(name);
+        function cycle() {
+            if (!tabs.length) return;
+            current = (current + 1) % tabs.length;
+            showTab(tabs[current].dataset.name);
         }
-        setInterval(cycle,5000);
-        if(tabs.length>0){
-            const first=tabs[0].dataset.name;
-            showTab(first);
-        }
+        setInterval(cycle, 5000);
+        if (tabs.length) showTab(tabs[0].dataset.name);
     </script>
 </body>
 </html>
