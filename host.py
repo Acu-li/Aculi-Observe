@@ -20,7 +20,8 @@ def update():
         'ip': ip,
         'info': data.get('info', existing.get('info', '')),
         'metrics': data.get('metrics', {}),
-        'image': existing.get('image')
+        'image': existing.get('image'),
+        'upload_disabled': False
     }
     return {'status': 'ok'}
 
@@ -37,6 +38,7 @@ def upload(name):
     path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(path)
     devices[name]['image'] = filename
+    devices[name]['upload_disabled'] = True
     return redirect(url_for('index'))
 
 @app.route('/')
