@@ -24,16 +24,25 @@ def load_config():
 def collect_metrics():
     temps = psutil.sensors_temperatures() if hasattr(psutil, 'sensors_temperatures') else {}
     metrics = {}
-    cpu_temps = temps.get('coretemp') or []
-    for i, entry in enumerate(cpu_temps[:2], start=1):
-        metrics[f'CPU {i}'] = f"{entry.current} °C"
-        metrics[f'CPU {i} util'] = f"{psutil.cpu_percent(percpu=True)[i-1]} %"
+    cpu_temps = temps.get('coretemp') or temps.get('cpu_thermal') or []
+    cpu_utils = psutil.cpu_percent(percpu=True)
+    for idx in range(2):
+        if idx < len(cpu_temps):
+            metrics[f'CPU {idx + 1}'] = f"{cpu_temps[idx].current} °C"
+        else:
+            metrics[f'CPU {idx + 1}'] = 'Not applicable'
+        util = cpu_utils[idx] if idx < len(cpu_utils) else 0
+        metrics[f'CPU {idx + 1} util'] = f"{util} %"
     mem = psutil.virtual_memory()
     metrics['RAM'] = f"{mem.used // (1024**2)}MB / {mem.total // (1024**2)}MB"
     metrics['Disk util'] = f"{psutil.disk_usage('/').percent} %"
-    gpu_temps = temps.get('gpu') or temps.get('amdgpu') or []
-    for i, entry in enumerate(gpu_temps[:10], start=1):
-        metrics[f'GPU {i}'] = f"{entry.current} °C"
+    gpu_temps = (temps.get('gpu') or temps.get('amdgpu') or temps.get('nvidia') or
+                 temps.get('nouveau') or [])
+    if gpu_temps:
+        for i, entry in enumerate(gpu_temps[:10], start=1):
+            metrics[f'GPU {i}'] = f"{entry.current} °C"
+    else:
+        metrics['GPU'] = 'Not applicable'
     return metrics
 
 
