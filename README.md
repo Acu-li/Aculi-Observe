@@ -1,32 +1,82 @@
 ![download.png](https://raw.githubusercontent.com/Fischherboot/Aculi/main/watermark-no-bg.png)
 
-# V.2 BROKEN, UNKNOWN WHY!
 # Aculi Observe
 
-This is a programm for my homelab, but you can use it if you want!
-It uses a ``host.py`` and a ``client.py`` to update system information.
+Aculi Observe is a lightweight system monitoring tool for your homelab. It consists of two components:
 
-### How to use
+- **Host**: Displays real-time system information from connected clients via a web interface.
+- **Client**: Runs on each monitored machine and periodically sends system stats to the Host.
 
-execute the pip install commands from the ``requirements-lol.txt``
+---
 
-then, go to your host machine, it can be a full server or even a raspberry pi.
-just start the host.py on there, write down its ip adress and open port 5000 in the local network so that the client can reach it.
+## Prerequisites
 
-only after the host has been setup, go to a client machine.
-then start the client.py
-it will ask you for two pieces of information.
+- Python 3.7 or higher
+- `pip`
 
-Enter the local IP of the host server: ``*enter the ip of the host*``
+---
 
-Enter a name for this client: ``*enter a name for the client, it will be displayed on the host*``
+## Host Setup
 
-then it'll update the sys info every 15 seconds, sending it to the host.
+1. **Clone or copy** this repository to your Host machine (e.g., a server or Raspberry Pi).
+2. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Start the Host server**:
+   ```bash
+   python host.py
+   ```
+4. **Note** the IP address and port printed by `host.py` (default port can be changed in the script).
+5. **Open** your browser and navigate to:
+   ```
+   http://<HOST_IP>:<PORT>/
+   ```
 
-### Current problem:
+---
 
-Host website doesnt update automatically, have to relaod it to see current information.
+## Client Setup
 
-bad looking web-gui
+> Make sure the Host is already running and accessible from the network.
 
-hard to use for non tech ppl
+1. **Copy** the project directory to the client machine you want to monitor.
+
+2. **Install dependencies**:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the client**:
+
+   ```bash
+   python client.py
+   ```
+
+   - When prompted, **enter the Host IP**.
+
+   - Press Enter, then **enter the Host port** (default: `8888`).
+
+   - Provide an **additional identifier** for this client.
+
+   - Optionally, you can add extra information of the client. (Can be skipped)
+
+4. To **stop** the client at any time, press `Ctrl+C`.
+
+5. **Install as a system service** (optional):
+
+   ```bash
+   chmod +x client_setup.sh
+   ./client_setup.sh
+   ```
+
+   This script will:
+
+   - Copy `client.py` and the configuration file (client_config.json).
+   - Create a systemd service that keeps the client running and updates it automatically.
+
+---
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. 
