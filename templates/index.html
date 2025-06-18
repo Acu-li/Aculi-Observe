@@ -78,6 +78,7 @@
             display:flex;
             justify-content:space-between;
             margin:5%;
+            margin:15
         }
         .image-section {
             width:25%;
@@ -110,6 +111,7 @@
     </ul>
     {% for name, data in devices.items() %}
     <div class="tab-content" id="tab-{{ name }}">
+        <h2>{{ name }} <span class="ip">{{ data.ip }}</span></h2>
         <div class="container">
             <div>
                 <table>
